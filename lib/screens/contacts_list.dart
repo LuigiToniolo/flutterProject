@@ -2,24 +2,30 @@ import 'package:bytebank_curso2/database/app_database.dart';
 import 'package:bytebank_curso2/models/contact.dart';
 import 'package:flutter/material.dart';
 
-import 'contect_form.dart';
+import '../database/dao/contact_dao.dart';
+import 'contact_form.dart';
 
-class ContactList extends StatelessWidget {
+class ContactList extends StatefulWidget {
+
+  @override
+  State<ContactList> createState() => _ContactListState();
+}
+
+class _ContactListState extends State<ContactList> {
+
+  final ContactDao _dao = ContactDao();
+
   final List<Contact> contacts = [];
-
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _accountNumberController =
-      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts'),
+        title: Text('Transfer'),
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: [],
-        future: findAll(),
+        future: _dao.findAll(),
         builder: (context, snapshot) {
           switch(snapshot.connectionState){
             case ConnectionState.none:
