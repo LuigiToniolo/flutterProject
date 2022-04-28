@@ -1,21 +1,19 @@
-import 'package:bytebank_curso2/database/app_database.dart';
+import 'package:bytebank_curso2/components/progress.dart';
+import 'package:bytebank_curso2/database/dao/contact_dao.dart';
 import 'package:bytebank_curso2/models/contact.dart';
+import 'package:bytebank_curso2/screens/contact_form.dart';
+import 'package:bytebank_curso2/screens/transaction_form.dart';
 import 'package:flutter/material.dart';
 
-import '../database/dao/contact_dao.dart';
-import 'contact_form.dart';
-
-class ContactList extends StatefulWidget {
+class ContactsList extends StatefulWidget {
 
   @override
-  State<ContactList> createState() => _ContactListState();
+  _ContactsListState createState() => _ContactsListState();
 }
 
-class _ContactListState extends State<ContactList> {
+class _ContactsListState extends State<ContactsList> {
 
   final ContactDao _dao = ContactDao();
-
-  final List<Contact> contacts = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,20 +25,11 @@ class _ContactListState extends State<ContactList> {
         initialData: [],
         future: _dao.findAll(),
         builder: (context, snapshot) {
-          switch(snapshot.connectionState){
+          switch (snapshot.connectionState) {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    CircularProgressIndicator(),
-                    Text('Loading')
-                  ],
-                ),
-              );
+              return Progress();
               break;
             case ConnectionState.active:
               break;
@@ -49,7 +38,16 @@ class _ContactListState extends State<ContactList> {
               return ListView.builder(
                 itemBuilder: (context, index) {
                   final Contact contact = contacts[index];
-                  return _ContactItem(contact);
+                  return _ContactItem(
+                    contact,
+                    onClick: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TransactionForm(contact),
+                        ),
+                      );
+                    },
+                  );
                 },
                 itemCount: contacts.length,
               );
@@ -64,9 +62,11 @@ class _ContactListState extends State<ContactList> {
             MaterialPageRoute(
               builder: (context) => ContactForm(),
             ),
-          );
+          ).then((value) => setState(() {}));
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+        ),
       ),
     );
   }
@@ -74,22 +74,28 @@ class _ContactListState extends State<ContactList> {
 
 class _ContactItem extends StatelessWidget {
   final Contact contact;
+  final Function onClick;
 
-  _ContactItem(this.contact);
+  _ContactItem(
+    this.contact, {
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Card(
       child: ListTile(
+        onTap: () => onClick(),
         title: Text(
           contact.name,
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(
+            fontSize: 24.0,
+          ),
         ),
         subtitle: Text(
           contact.accountNumber.toString(),
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 16.0,
           ),
         ),
       ),

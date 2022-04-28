@@ -7,7 +7,7 @@ class ContactDao {
   static const String tableSql = 'CREATE TABLE $_tableName('
       '$_id INTEGER PRIMARY KEY, '
       '$_name TEXT, '
-      '$_accountNumber   INTEGER';
+      '$_accountNumber INTEGER)';
   static const String _tableName = 'contacts';
   static const String _id = 'id';
   static const String _name = 'name';
@@ -17,15 +17,13 @@ class ContactDao {
     final Database db = await getDatabase();
     Map<String, dynamic> contactMap = _toMap(contact);
     return db.insert(_tableName, contactMap);
+  }
 
-    //Com o Async await ^^^^^^^^^^^^
-
-    // return getDatabase().then((db) {
-    //   final Map<String, dynamic> contactMap = Map();
-    //   contactMap['name'] = contact.name;
-    //   contactMap['account_number'] = contact.accountNumber;
-    //   return db.insert('contacts', contactMap);
-    // });
+  Future<List<Contact>> findAll() async {
+    final Database db = await getDatabase();
+    final List<Map<String, dynamic>> result = await db.query(_tableName);
+    List<Contact> contacts = _toList(result);
+    return contacts;
   }
 
   Map<String, dynamic> _toMap(Contact contact) {
@@ -33,32 +31,6 @@ class ContactDao {
     contactMap[_name] = contact.name;
     contactMap[_accountNumber] = contact.accountNumber;
     return contactMap;
-  }
-
-// Data Access Object - DAO -> Ser uma camada que vai manter os comportamentos das entidades.
-
-  Future<List<Contact>> findAll() async {
-    final Database db = await getDatabase();
-    final List<Map<String, dynamic>> result = await db.query(_tableName);
-    List<Contact> contacts = _toList(result);
-    return contacts;
-
-    // Com o async await ^^^^^^^^
-
-    // return getDatabase().then((db) {
-    //   return db.query('contacts').then((maps) {
-    //     final List<Contact> contacts = [];
-    //     for (Map<String, dynamic> row in maps) {
-    //       final Contact contact = Contact(
-    //         row['id'],
-    //         row['name'],
-    //         row['account_number'],
-    //       );
-    //       contacts.add(contact);
-    //     }
-    //     return contacts;
-    //   });
-    // });
   }
 
   List<Contact> _toList(List<Map<String, dynamic>> result) {

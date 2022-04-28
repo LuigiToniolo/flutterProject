@@ -1,7 +1,6 @@
+import 'package:bytebank_curso2/screens/contacts_list.dart';
 import 'package:bytebank_curso2/screens/transactions_list.dart';
 import 'package:flutter/material.dart';
-
-import 'contacts_list.dart';
 
 class Dashboard extends StatelessWidget {
   @override
@@ -11,7 +10,7 @@ class Dashboard extends StatelessWidget {
         title: Text('Dashboard'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
@@ -42,16 +41,18 @@ class Dashboard extends StatelessWidget {
   }
 
   void _showContactsList(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => ContactList(),
-    ),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ContactsList(),
+      ),
     );
   }
 
   _showTransactionsList(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => TransactionsList(),
-    ),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => TransactionsList(),
+      ),
     );
   }
 }
@@ -59,13 +60,13 @@ class Dashboard extends StatelessWidget {
 class _FeatureItem extends StatelessWidget {
   final String name;
   final IconData icon;
-  final Function onClick;
+  final Function? onClick;
 
   _FeatureItem(
-      this.name,
-      this.icon, {
-      required this.onClick
-      });
+    this.name,
+    this.icon, {
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +75,9 @@ class _FeatureItem extends StatelessWidget {
       child: Material(
         color: Theme.of(context).primaryColor,
         child: InkWell(
-          onTap: () => onClick(),
+          onTap: () => onClick!(),
           child: Container(
+            padding: EdgeInsets.all(8.0),
             width: 150,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,13 +86,13 @@ class _FeatureItem extends StatelessWidget {
                 Icon(
                   icon,
                   color: Colors.white,
-                  size: 34.0,
+                  size: 24.0,
                 ),
                 Text(
                   name,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20.0,
+                    fontSize: 16.0,
                   ),
                 )
               ],
